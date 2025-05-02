@@ -1,16 +1,22 @@
+import random
+from datetime import datetime, timedelta
+
 class TrafficDataIngestor:
     def __init__(self):
         pass
 
     def load_data(self):
         """
-        Load traffic data.
-        For now, returns mock data.
+        Generate synthetic traffic data for 10 routes and 10 time slots.
         """
-        # Mock data: {route_id: {time_slot: congestion_level}}
-        data = {
-            "route_1": {"08:00": "high", "09:00": "medium", "10:00": "low"},
-            "route_2": {"08:00": "medium", "09:00": "high", "10:00": "medium"},
-            "route_3": {"08:00": "low", "09:00": "low", "10:00": "low"},
-        }
+        congestion_levels = ["low", "medium", "high"]
+        data = {}
+        base_time = datetime.strptime("08:00", "%H:%M")
+        for i in range(1, 11):
+            route_id = f"route_{i}"
+            data[route_id] = {}
+            for j in range(10):
+                time_slot = (base_time + timedelta(minutes=30*j)).strftime("%H:%M")
+                congestion = random.choice(congestion_levels)
+                data[route_id][time_slot] = congestion
         return data
