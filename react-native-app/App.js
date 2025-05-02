@@ -1,22 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, View, Text, StyleSheet } from 'react-native';
 
-const mockPassengerData = {
-  "stop_1": {"08:00": 50, "09:00": 70, "10:00": 30},
-  "stop_2": {"08:00": 40, "09:00": 60, "10:00": 20},
-  "stop_3": {"08:00": 30, "09:00": 50, "10:00": 25},
-};
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, ScrollView, View, Text, StyleSheet } from 'react-native';
 
-const mockTrafficData = {
-  "route_1": {"08:00": "high", "09:00": "medium", "10:00": "low"},
-  "route_2": {"08:00": "medium", "09:00": "high", "10:00": "medium"},
-  "route_3": {"08:00": "low", "09:00": "low", "10:00": "low"},
-};
+function generateSyntheticPassengerData() {
+  const data = {};
+  const baseHour = 8;
+  for (let i = 1; i <= 100; i++) {
+    const stopId = `stop_${i}`;
+    data[stopId] = {};
+    for (let j = 0; j < 10; j++) {
+      const timeSlot = `${String(baseHour + Math.floor(j / 2)).padStart(2, '0')}:${j % 2 === 0 ? '00' : '30'}`;
+      data[stopId][timeSlot] = Math.floor(Math.random() * 90) + 10;
+    }
+  }
+  return data;
+}
 
-const mockEmissionData = {
-  "diesel_bus": 1.2,
-  "electric_bus": 0.1,
-  "hybrid_bus": 0.6,
+function generateSyntheticTrafficData() {
+  const congestionLevels = ['low', 'medium', 'high'];
+  const data = {};
+  const baseHour = 8;
+  for (let i = 1; i <= 10; i++) {
+    const routeId = `route_${i}`;
+    data[routeId] = {};
+    for (let j = 0; j < 10; j++) {
+      const timeSlot = `${String(baseHour + Math.floor(j / 2)).padStart(2, '0')}:${j % 2 === 0 ? '00' : '30'}`;
+      data[routeId][timeSlot] = congestionLevels[Math.floor(Math.random() * congestionLevels.length)];
+    }
+  }
+  return data;
+}
+
+const emissionData = {
+  diesel_bus: 1.2,
+  electric_bus: 0.1,
+  hybrid_bus: 0.6,
 };
 
 function predictPassengerDemand(passengerData) {
@@ -31,19 +51,39 @@ function analyzeTraffic(trafficData) {
 
 function optimizeSchedule(passengerDemand, trafficConditions) {
   // Simple optimization logic (mock)
-  return {
-    "route_1": {"08:00": 5, "09:00": 4, "10:00": 3},
-    "route_2": {"08:00": 4, "09:00": 5, "10:00": 4},
-    "route_3": {"08:00": 3, "09:00": 3, "10:00": 3},
-  };
+  // For demonstration, allocate buses proportional to passenger demand
+  const schedule = {};
+  Object.keys(trafficConditions).forEach(route => {
+    schedule[route] = {};
+    Object.keys(trafficConditions[route]).forEach(timeSlot => {
+      // Simple logic: more congestion means fewer buses allocated
+      const congestion = trafficConditions[route][timeSlot];
+      let congestionFactor = 1;
+      if (congestion === 'high') congestionFactor = 0.7;
+      else if (congestion === 'medium') congestionFactor = 0.85;
+      else congestionFactor = 1;
+
+      // Sum passenger demand for stops on this route (simplified)
+      let totalDemand = 0;
+      Object.values(passengerDemand).forEach(times => {
+        if (times[timeSlot]) totalDemand += times[timeSlot];
+      });
+
+      const busesAllocated = Math.max(1, Math.round((totalDemand / 100) * congestionFactor));
+      schedule[route][timeSlot] = busesAllocated;
+    });
+  });
+  return schedule;
 }
 
 export default function App() {
   const [schedule, setSchedule] = useState({});
 
   useEffect(() => {
-    const demand = predictPassengerDemand(mockPassengerData);
-    const traffic = analyzeTraffic(mockTrafficData);
+    const passengerData = generateSyntheticPassengerData();
+    const trafficData = generateSyntheticTrafficData();
+    const demand = predictPassengerDemand(passengerData);
+    const traffic = analyzeTraffic(trafficData);
     const optimized = optimizeSchedule(demand, traffic);
     setSchedule(optimized);
   }, []);
