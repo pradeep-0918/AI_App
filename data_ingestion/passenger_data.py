@@ -11,7 +11,7 @@ class PassengerDataIngestor:
         """
         data = {}
         base_time = datetime.strptime("08:00", "%H:%M")
-        for i in range(1, 101):
+        for i in range(1, 1001):
             stop_id = f"stop_{i}"
             data[stop_id] = {}
             for j in range(10):
