@@ -4,10 +4,8 @@ class EmissionDataIngestor:
 
     def load_data(self):
         """
-        Load emission data per vehicle type.
-        For now, returns mock data.
+        Generate synthetic emission data for vehicle types.
         """
-        # Mock data: {vehicle_type: emission_per_km}
         data = {
             "diesel_bus": 1.2,  # kg CO2 per km
             "electric_bus": 0.1,
