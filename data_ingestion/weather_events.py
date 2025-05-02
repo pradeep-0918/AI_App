@@ -1,16 +1,22 @@
+import random
+from datetime import datetime, timedelta
+
 class WeatherEventsIngestor:
     def __init__(self):
         pass
 
     def load_data(self):
         """
-        Load weather and event data.
-        For now, returns mock data.
+        Generate synthetic weather and event data for 100 days.
         """
-        # Mock data: {date: weather_condition, events: [event_list]}
-        data = {
-            "2024-04-01": {"weather": "sunny", "events": ["concert"]},
-            "2024-04-02": {"weather": "rainy", "events": []},
-            "2024-04-03": {"weather": "cloudy", "events": ["sports_game"]},
-        }
+        weather_conditions = ["sunny", "rainy", "cloudy"]
+        event_types = ["concert", "sports_game", "festival", "none"]
+        data = {}
+        base_date = datetime.strptime("2020-01-01", "%Y-%m-%d")
+        for i in range(100):
+            date = (base_date + timedelta(days=i)).strftime("%Y-%m-%d")
+            weather = random.choice(weather_conditions)
+            event = random.choice(event_types)
+            events = [] if event == "none" else [event]
+            data[date] = {"weather": weather, "events": events}
         return data
