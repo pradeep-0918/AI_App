@@ -7,12 +7,12 @@ class TrafficDataIngestor:
 
     def load_data(self):
         """
-        Generate synthetic traffic data for 10 routes and 10 time slots.
+        Generate synthetic traffic data for 100 routes and 10 time slots.
         """
         congestion_levels = ["low", "medium", "high"]
         data = {}
         base_time = datetime.strptime("08:00", "%H:%M")
-        for i in range(1, 11):
+        for i in range(1, 101):
             route_id = f"route_{i}"
             data[route_id] = {}
             for j in range(10):
